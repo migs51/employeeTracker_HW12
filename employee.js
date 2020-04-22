@@ -21,4 +21,25 @@ connection.connect(function(err) {
     if (err) throw err;
     // run the start function after the connection is made to prompt the user
     console.log("connected!");
+    startApp();
   });
+
+  function startApp() {
+      inquirer
+        .prompt({
+            name: "employeeCRUD",
+            type: "list",
+            message: "Would you like to [Add], [View],or [Update] an employee, role or department?",
+            choices: ["Add Employee", "Add Role", "Add Department", "View Employees", "View Roles", "View Departments", "Update Employee Roles"]
+        })
+        .then(function(answer) {
+            if (answer.employeeCRUD === "Add Employee") {
+              addEmployee();
+            }
+            else if(answer.employeeCRUD === "View Employees") {
+              viewEmployees();
+            } else{
+              connection.end();
+            }
+          });
+  }
