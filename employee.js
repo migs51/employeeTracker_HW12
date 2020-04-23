@@ -20,26 +20,100 @@ var connection = mysql.createConnection({
 connection.connect(function(err) {
     if (err) throw err;
     // run the start function after the connection is made to prompt the user
-    console.log("connected!");
+    console.log("connected as id " + connection.threadId + "\n");
     startApp();
   });
 
+  //function that kickstarts app menu prompt
   function startApp() {
       inquirer
         .prompt({
             name: "employeeCRUD",
             type: "list",
             message: "Would you like to [Add], [View],or [Update] an employee, role or department?",
-            choices: ["Add Employee", "Add Role", "Add Department", "View Employees", "View Roles", "View Departments", "Update Employee Roles"]
+            choices: ["Add Employee", "Add Role", "Add Department", "View Employees", "View Roles", "View Departments", "Update Employee Roles", "Exit"]
         })
         .then(function(answer) {
             if (answer.employeeCRUD === "Add Employee") {
-              addEmployee();
+                addEmployee();
             }
             else if(answer.employeeCRUD === "View Employees") {
-              viewEmployees();
-            } else{
+                viewEmployees();
+            } 
+            else if(answer.employeeCRUD === "Add Role") {
+                addRoles();
+            } 
+            else if(answer.employeeCRUD === "Add Department") {
+                addDepartment();
+            } 
+            else if(answer.employeeCRUD === "View Roles") {
+                viewRoles();
+            } 
+            else if(answer.employeeCRUD === "View Departments") {
+                viewDepartments();
+            } 
+            else if(answer.employeeCRUD === "Update Employee Roles") {
+                updateRole();
+            } 
+            else{
               connection.end();
             }
           });
+  }
+
+  //function to prompt user to view employees
+  //update so it show role and department using a SQL JOIN
+
+  function viewEmployees() {
+      connection.query ("SELECT * FROM employees", function (err, res) {
+          if (err) throw err;
+          console.table(res);
+      })
+      startApp();
+      
+  }
+
+  function addEmployee() {
+
+    inquirer
+        .prompt ([
+            {
+            name: "first_name",
+            type: "input",
+            message: "What is the employee's first name?"
+        },
+        {
+            name: "last_name",
+            type: "input",
+            message: "What is the employee's last name?"
+        },
+        {
+            name: "role",
+            type: "choices",
+            message: "What is this employee's role?",
+            choices: ["Salesman", "Accountant", "Sales Manager", "Engineer", "Lawyer", "Sales Development", "Exit"]
+        },
+        {
+            name: "manager",
+            message: "Whos is their Manager?",
+            choices: ["Miguel Mejares", "Courtney Greenberg", "Ted Bundy", "Exit"]
+        }
+        ])
+        .then(function(answer) {
+            connection.query ("INSERT INTO employees SET ?", 
+
+                {
+                    first_name: answer.first_name,
+                    last_name: answer.last_name,
+                    role_id: answer.choices,
+                    manager_id: answer.manager
+                },
+                function (err) {
+                    if (err) throw err;
+                    console.log("employee succesfully added!");
+                    startApp();
+            })
+        })
+  
+    
   }
