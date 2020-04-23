@@ -91,10 +91,12 @@ connection.connect(function(err) {
             name: "role",
             type: "choices",
             message: "What is this employee's role?",
-            choices: ["Salesman", "Accountant", "Sales Manager", "Engineer", "Lawyer", "Sales Development", "Exit"]
+            choices: getRoles()
+            
         },
         {
             name: "manager",
+            type: "choices",
             message: "Whos is their Manager?",
             choices: ["Miguel Mejares", "Courtney Greenberg", "Ted Bundy", "Exit"]
         }
@@ -117,3 +119,7 @@ connection.connect(function(err) {
   
     
   }
+
+function getRoles() {
+    return connection.query ("SELECT * FROM roles");
+}
