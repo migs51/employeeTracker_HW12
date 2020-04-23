@@ -46,12 +46,6 @@ connection.connect(function(err) {
             else if(answer.employeeCRUD === "Add Department") {
                 addDepartment();
             } 
-            else if(answer.employeeCRUD === "View Roles") {
-                viewRoles();
-            } 
-            else if(answer.employeeCRUD === "View Departments") {
-                viewDepartments();
-            } 
             else if(answer.employeeCRUD === "Update Employee Roles") {
                 updateRole();
             } 
@@ -62,7 +56,7 @@ connection.connect(function(err) {
   }
 
   //function to prompt user to view employees
-  //update so it show role and department using a SQL JOIN
+  
 
   function viewEmployees() {
       connection.query ("SELECT e.first_name,e.last_name, r.title, r.salary, d.name,  CONCAT(m.first_name, ' ', m.last_name)  as manager  from employees e LEFT JOIN roles  r on e.role_id = r.id LEFT JOIN departments d on r.department_id = d.id LEFT JOIN employees m on m.id = e.manager_id;", function (err, res) {
